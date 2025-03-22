@@ -65,4 +65,63 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.put("/:id", authMiddleware, async (req, res) => {
+  try {
+    const { name, date, location, description } = req.body;
+    const eventId = req.params.id;
+
+    // Find the event in MongoDB
+    const event = await Event.findById(eventId);
+
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    // Convert organizerId to string before comparing
+    if (event.organizerId.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Unauthorized to update this event" });
+    }
+
+    // Update event fields if provided
+    if (name) event.name = name;
+    if (date) event.date = date;
+    if (location) event.location = location;
+    if (description) event.description = description;
+
+    await event.save(); // Save the updated event
+
+    res.status(200).json({ message: "Event updated successfully", event });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
+
+router.delete("/:id", authMiddleware, async (req, res) => {
+  try {
+    const eventId = req.params.id;
+
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const event = await Event.findById(eventId);
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    // Only the event organizer can delete
+    if (event.organizerId.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Unauthorized to delete this event" });
+    }
+
+    await Event.findByIdAndDelete(eventId);
+    res.json({ message: "Event deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;
