@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Layout from "../components/Layout";
-import Loading from "../components/Loading";
+import Layout from "./Layout";
+import Loading from "./Loading";
 import EventService from "../services/event.service";
 import { useAuth } from "../contexts/AuthContext";
 
