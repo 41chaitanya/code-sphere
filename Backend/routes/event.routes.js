@@ -50,4 +50,19 @@ router.post("/:id/rsvp", authMiddleware, async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id).populate("organizerId", "name email").populate("attendees", "name email");
+
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    res.json(event);
+  } 
+  catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;

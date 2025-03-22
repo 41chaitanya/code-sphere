@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 
 // Loading Spinner Component
@@ -75,11 +76,12 @@ const EventCard = ({ event }) => {
             <span>Organizer: {event.organizerId?.name || 'Unknown'}</span>
           </div>
           
-          <button
-            className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition"
+          <Link
+            to={`/events/${event._id}`}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
           >
             View Details
-          </button>
+          </Link>
         </div>
       </div>
     </div>
